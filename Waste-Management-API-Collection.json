@@ -1,0 +1,244 @@
+{
+	"info": {
+		"_postman_id": "4b6a9530-9b4f-4d92-915f-c2db8105c317",
+		"name": "Waste Management API",
+		"description": "API Documentation for the Waste Management System backend assignment.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "1. User Registration",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"testuser@example.com\",\n    \"password\": \"password123\",\n    \"role\": \"citizen\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registers a new user (either citizen or manager)."
+					},
+					"response": []
+				},
+				{
+					"name": "2. User Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"testuser@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Logs in an existing user and returns a JWT token."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Waste Requests (CRUD)",
+			"item": [
+				{
+					"name": "1. Create Waste Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Broken E-Waste Dump\",\n    \"description\": \"There are old monitors abandoned near city park.\",\n    \"wasteCategory\": \"E-Waste\",\n    \"location\": \"City Park Near North Gate\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"requests"
+							]
+						},
+						"description": "Requires JWT token. Creates a new waste collection request."
+					},
+					"response": []
+				},
+				{
+					"name": "2. Get Waste Requests",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"requests"
+							]
+						},
+						"description": "Requires JWT token. Managers get all requests, Citizens only get their own requests."
+					},
+					"response": []
+				},
+				{
+					"name": "3. Update Request Status (Manager Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"Dispatched\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/requests/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"requests",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "ENTER_REQUEST_ID_HERE"
+								}
+							]
+						},
+						"description": "Updates the specific status of a request ('Pending', 'Dispatched', 'Resolved'). Must have 'manager' role."
+					},
+					"response": []
+				},
+				{
+					"name": "4. Delete Waste Request (Manager Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/requests/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"requests",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "ENTER_REQUEST_ID_HERE"
+								}
+							]
+						},
+						"description": "Deletes the request entirely from the database. Requires manager role."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
